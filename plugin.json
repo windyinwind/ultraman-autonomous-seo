@@ -1,7 +1,7 @@
 {
-  "name": "seo-optimizer",
+  "name": "ultraman-auto-seo",
   "version": "1.0.0",
-  "description": "A data-driven SEO optimization plugin for Antigravity. Uses Google Search Console data to identify opportunities, implements Google-recommended fixes in a safe branch, and verifies rendered output with Chrome DevTools.",
+  "description": "An automated, data-driven SEO optimization plugin for AI coding agents. Uses Google Search Console to identify opportunities, implements Google-recommended fixes in a safe branch, verifies output with Chrome DevTools, and supports automated CI/CD loop execution.",
   "author": {
     "name": "Doodle Sea Dev",
     "email": "cs@doodle-sea.com"

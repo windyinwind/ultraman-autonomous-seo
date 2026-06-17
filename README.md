@@ -132,6 +132,79 @@ graph TD
 
 ---
 
+## 🤖 CI/CD & Automation Loops (Optional)
+
+Since this plugin operates on a structured, automated process, you can set it up to run **on a recurring schedule (looping optimization)** in your own website repository using GitHub Actions or a local cron job.
+
+### 1. GitHub Actions (Continuous Optimization)
+
+You can create a workflow file (e.g. `.github/workflows/auto-seo.yml`) in your website's repository to trigger your AI agent to optimize your SEO every week:
+
+```yaml
+name: Ultraman Auto SEO Loop
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Every Sunday at midnight
+  workflow_dispatch:
+
+jobs:
+  seo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Necessary for branch creation and merges
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Set up GCP Credentials
+        run: |
+          echo "${{ secrets.GCP_SEO_KEY_JSON }}" > gcp-credentials.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$GITHUB_WORKSPACE/gcp-credentials.json" >> $GITHUB_ENV
+
+      - name: Trigger AI Agent
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+        run: |
+          # Command to invoke your preferred agent CLI
+          npx -y @google/antigravity-cli@latest run \
+            --instruction "Audit website SEO using GSC, implement fixes in a branch, verify build, and merge to main."
+```
+
+### 2. Local Cron Job Setup
+
+If you prefer to run the loop locally on your machine, you can create a simple cron runner script (e.g., `scripts/seo-cron.sh`) in your project:
+
+```bash
+#!/bin/bash
+# Navigate to your website repo
+cd /Users/username/Code/your-website-repo || exit
+
+# Run the Agent CLI to trigger optimization
+npx -y @google/antigravity-cli@latest run \
+  --instruction "Audit website SEO using GSC, implement fixes in a branch, verify build, and merge to main." \
+  >> ./seo-optimization.log 2>&1
+```
+
+Make it executable: `chmod +x scripts/seo-cron.sh`, and add it to your local crontab:
+```bash
+# Edit crontab
+crontab -e
+
+# Run every Sunday at 2 AM
+0 2 * * 0 /Users/username/Code/your-website-repo/scripts/seo-cron.sh
+```
+
+---
+
 ## 📄 License
 
 This project is open-source and free, licensed under the **MIT License**. Feel free to use, modify, and distribute it!
