@@ -1,0 +1,38 @@
+{
+  "_comment": "SEO Optimizer Plugin Configuration. Copy this file to config.json and edit to configure your site's SEO settings.",
+
+  "site_url": "https://your-domain.com/",
+
+  "repo_path": "/absolute/path/to/your/website/repository",
+
+  "gcp_credentials_path": "~/.config/gcloud/application_default_credentials.json",
+
+  "supported_languages": ["en"],
+
+  "default_language": "en",
+
+  "sitemap_script": "scripts/generate_sitemap.mjs",
+
+  "build_command": "npm run build",
+
+  "dev_command": "npm run dev",
+
+  "dev_url": "http://localhost:3000",
+
+  "key_pages": [
+    { "path": "/", "schema_types": ["SoftwareApplication", "WebSite", "Organization"], "priority": "homepage" }
+  ],
+
+  "performance_thresholds": {
+    "critical_ctr_below": 0.02,
+    "critical_position_range": [1, 10],
+    "high_opportunity_impressions_min": 50,
+    "position_drop_alert": 5
+  },
+
+  "structured_data_defaults": {
+    "organization_name": "Your Organization Name",
+    "logo_url": "https://your-domain.com/logo.png",
+    "contact_email": "contact@your-domain.com"
+  }
+}

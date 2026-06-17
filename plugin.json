@@ -1,0 +1,21 @@
+{
+  "name": "seo-optimizer",
+  "version": "1.0.0",
+  "description": "A data-driven SEO optimization plugin for Antigravity. Uses Google Search Console data to identify opportunities, implements Google-recommended fixes in a safe branch, and verifies rendered output with Chrome DevTools.",
+  "author": {
+    "name": "Doodle Sea Dev",
+    "email": "cs@doodle-sea.com"
+  },
+  "keywords": [
+    "seo",
+    "google-search-console",
+    "structured-data",
+    "json-ld",
+    "chrome-devtools",
+    "schema.org",
+    "rich-results",
+    "sitemap",
+    "hreflang",
+    "meta-tags"
+  ]
+}
