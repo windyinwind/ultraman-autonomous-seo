@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ultraman Autonomous SEO - Interactive Guide</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg-dark: #0b0f19;
+      --card-bg: rgba(17, 24, 39, 0.7);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --primary-cyan: #06b6d4;
+      --primary-red: #ef4444;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent-glow: rgba(6, 182, 212, 0.15);
+      --red-glow: rgba(239, 68, 68, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(6, 182, 212, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(239, 68, 68, 0.08) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    header {
+      text-align: center;
+      padding: 3rem 0;
+      position: relative;
+    }
+
+    .logo-container {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 1.5rem;
+    }
+
+    .logo-img {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 3px solid var(--primary-cyan);
+      box-shadow: 0 0 30px var(--accent-glow), 0 0 15px var(--red-glow);
+      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .logo-img:hover {
+      transform: scale(1.08) rotate(5deg);
+      box-shadow: 0 0 40px rgba(6, 182, 212, 0.3), 0 0 25px rgba(239, 68, 68, 0.3);
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff 30%, var(--primary-cyan) 70%, var(--primary-red) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.05em;
+    }
+
+    .subtitle {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 0 auto 2rem auto;
+      font-weight: 300;
+    }
+
+    /* Installer Copy Card */
+    .one-liner-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 600px;
+      margin: 0 auto 3rem auto;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .one-liner-code {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--primary-cyan);
+      font-size: 0.95rem;
+      overflow-x: auto;
+      white-space: nowrap;
+      margin-right: 1rem;
+    }
+
+    .copy-btn {
+      background: rgba(6, 182, 212, 0.1);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      color: var(--primary-cyan);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .copy-btn:hover {
+      background: var(--primary-cyan);
+      color: var(--bg-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
+    }
+
+    .copy-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 4rem;
+    }
+
+    h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+
+    h2 i {
+      color: var(--primary-cyan);
+    }
+
+    /* Grid Features */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2rem;
+      backdrop-filter: blur(8px);
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(6, 182, 212, 0.3);
+      box-shadow: 0 10px 30px rgba(6, 182, 212, 0.1);
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: inline-block;
+    }
+
+    .feature-icon.cyan { color: var(--primary-cyan); }
+    .feature-icon.red { color: var(--primary-red); }
+
+    .feature-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Interactive Timeline Architecture */
+    .timeline-container {
+      position: relative;
+      padding: 2rem 0;
+    }
+
+    .timeline-line {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(to bottom, var(--primary-cyan), var(--primary-red));
+      transform: translateX(-50%);
+      z-index: 1;
+    }
+
+    .timeline-step {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .timeline-step:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+
+    .timeline-card {
+      width: 45%;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(8px);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .timeline-card:hover {
+      transform: scale(1.03);
+      border-color: var(--primary-cyan);
+      box-shadow: 0 10px 25px rgba(6, 182, 212, 0.15);
+    }
+
+    .timeline-step:nth-child(even) .timeline-card:hover {
+      border-color: var(--primary-red);
+      box-shadow: 0 10px 25px rgba(239, 68, 68, 0.15);
+    }
+
+    .timeline-node {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--bg-dark);
+      border: 3px solid var(--primary-cyan);
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: var(--primary-cyan);
+      box-shadow: 0 0 15px var(--accent-glow);
+      transition: all 0.3s ease;
+    }
+
+    .timeline-step:nth-child(even) .timeline-node {
+      border-color: var(--primary-red);
+      color: var(--primary-red);
+      box-shadow: 0 0 15px var(--red-glow);
+    }
+
+    .timeline-card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .timeline-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .timeline-card .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .badge-trigger { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+    .badge-step { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+    .badge-deploy { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; }
+
+    .timeline-detail-panel {
+      display: none;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.85rem;
+      color: var(--text-main);
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    .timeline-detail-panel code {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.15rem 0.3rem;
+      border-radius: 4px;
+      color: var(--primary-cyan);
+    }
+
+    .timeline-card.active .timeline-detail-panel {
+      display: block;
+    }
+
+    /* Tabs Section */
+    .tabs-container {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 3rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .tabs-menu {
+      display: flex;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 1.25rem;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .tab-btn.active {
+      color: var(--primary-cyan);
+      border-bottom: 2px solid var(--primary-cyan);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .tab-content {
+      padding: 2rem;
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    /* Code Display styling */
+    pre {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 1.5rem;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      overflow-x: auto;
+      font-size: 0.88rem;
+      position: relative;
+    }
+
+    pre code {
+      color: #38bdf8;
+    }
+
+    .code-title {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .code-copy {
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .code-copy:hover {
+      color: var(--primary-cyan);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsiveness */
+    @media (max-width: 768px) {
+      .timeline-line {
+        left: 20px;
+      }
+      .timeline-step {
+        flex-direction: column !important;
+        align-items: flex-start;
+        padding-left: 3rem;
+        margin-bottom: 2rem;
+      }
+      .timeline-card {
+        width: 100%;
+      }
+      .timeline-node {
+        left: 20px;
+        transform: translateX(-50%);
+      }
+      h1 {
+        font-size: 2.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="logo-container">
+        <!-- Renders the logo relative path in the repository -->
+        <img src="images/logo.jpg" alt="Ultraman Autonomous SEO Logo" class="logo-img">
+      </div>
+      <h1>ULTRAMAN AUTONOMOUS SEO</h1>
+      <p class="subtitle">An autonomous, data-driven, production-grade SEO optimization workflow for AI Coding Agents. Loop audits, branch changes, and DevTools validation automatically.</p>
+      
+      <div class="one-liner-card">
+        <span class="one-liner-code">git clone https://github.com/your-username/ultraman-autonomous-seo.git</span>
+        <button class="copy-btn" onclick="copyText('git clone https://github.com/your-username/ultraman-autonomous-seo.git', this)">
+          <i class="fa-regular fa-copy"></i> Copy Clone
+        </button>
+      </div>
+    </header>
+
+    <!-- Features Overview -->
+    <section>
+      <h2><i class="fa-solid fa-bolt"></i> Autonomous Core Capabilities</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon cyan"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+          <h3>1. Data-Driven Auditing</h3>
+          <p>Direct integration with Google Search Console MCP. Retrieves real CTRs, query impressions, sitemap indexes, and identifies low-performing keywords automatically.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon red"><i class="fa-solid fa-code-fork"></i></div>
+          <h3>2. Safe Git Branching</h3>
+          <p>Never commits directly to main. Automatically branches to <code>seo/gsc-audit-YYYY-MM-DD</code>, applies optimized fixes, runs typescript compilations, and verifies builds before merge.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon cyan"><i class="fa-solid fa-gauge-high"></i></div>
+          <h3>3. Render Verification</h3>
+          <p>Uses Playwright/Chrome DevTools MCP to spin up local servers and verify the final rendered DOM—ensuring React/Vue/Next.js dynamic tags match expectations.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon red"><i class="fa-solid fa-arrows-spin"></i></div>
+          <h3>4. Loop Orchestration</h3>
+          <p>Supports scheduled automation loops via GitHub Actions or local crontabs. The AI wakes up, audits, commits, merges, and triggers deployment automatically.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Architecture Diagram -->
+    <section>
+      <h2><i class="fa-solid fa-diagram-project"></i> Interactive Autonomous Architecture</h2>
+      <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem;">Click on any step below to expand detailed execution parameters, CLI commands, and check criteria.</p>
+      
+      <div class="timeline-container">
+        <div class="timeline-line"></div>
+        
+        <!-- Step 1 -->
+        <div class="timeline-step">
+          <div class="timeline-node">1</div>
+          <div class="timeline-card" onclick="toggleDetail(this)">
+            <span class="badge badge-trigger">Trigger Source</span>
+            <h3><i class="fa-solid fa-clock"></i> Automation Schedule</h3>
+            <p>GitHub Actions cron scheduler, local cron scheduler (crontab), or manual developer request wakes up the AI Agent in the workspace.</p>
+            <div class="timeline-detail-panel">
+              <strong>Execution Mode:</strong><br>
+              - Cron triggers CLI: <code>npx -y @google/antigravity-cli@latest run --instruction "..."</code><br>
+              - The agent is supplied with the <code>ultraman-autonomous-seo</code> plugin rules.
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="timeline-step">
+          <div class="timeline-node">2</div>
+          <div class="timeline-card" onclick="toggleDetail(this)">
+            <span class="badge badge-step">Audit Phase</span>
+            <h3><i class="fa-solid fa-cloud-arrow-down"></i> Fetch GSC Performance</h3>
+            <p>The agent reads <code>.seo-config.json</code>, verifies <code>search-console</code> MCP tools, and runs queries to fetch performance data.</p>
+            <div class="timeline-detail-panel">
+              <strong>MCP Tool Calls:</strong><br>
+              - <code>get_performance_summary(site_url, period="28d")</code><br>
+              - <code>get_search_analytics(site_url, dimensions=["query"], row_limit=100)</code><br>
+              - <code>list_sitemaps(site_url)</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="timeline-step">
+          <div class="timeline-node">3</div>
+          <div class="timeline-card" onclick="toggleDetail(this)">
+            <span class="badge badge-step">Analysis Phase</span>
+            <h3><i class="fa-solid fa-brain"></i> Google Guideline Analysis</h3>
+            <p>Agent analyzes data against Google rules: categorizes queries into Critical (CTR &lt; 2%), High Opportunity, and Growth tiers.</p>
+            <div class="timeline-detail-panel">
+              <strong>Audit Checklist:</strong><br>
+              - Check title tag lengths (30-60 chars).<br>
+              - Check meta descriptions (120-160 chars).<br>
+              - Verify JSON-LD schemas (SoftwareApp, FAQPage, Articles).<br>
+              - Check hreflang alternates (for N languages, verify N+1 alternates).
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="timeline-step">
+          <div class="timeline-node">4</div>
+          <div class="timeline-card" onclick="toggleDetail(this)">
+            <span class="badge badge-step">Modification</span>
+            <h3><i class="fa-solid fa-code-branch"></i> Git Branch & Coding</h3>
+            <p>Creates a safe, date-stamped branch <code>seo/gsc-audit-YYYY-MM-DD</code>. Generates/updates JSON-LD schemas, titles, descriptions, and translation files.</p>
+            <div class="timeline-detail-panel">
+              <strong>Git Sequence:</strong><br>
+              <code>git checkout main && git pull</code><br>
+              <code>git checkout -b seo/gsc-audit-2026-06-18</code><br>
+              <strong>Changes:</strong> Edits page components, updates locale files, and runs sitemap script.
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="timeline-step">
+          <div class="timeline-node">5</div>
+          <div class="timeline-card" onclick="toggleDetail(this)">
+            <span class="badge badge-step">Verification</span>
+            <h3><i class="fa-solid fa-vial-circle-check"></i> Production Build Verification</h3>
+            <p>Executes the configured build command to capture any TypeScript compilation errors or broken imports before committing.</p>
+            <div class="timeline-detail-panel">
+              <strong>Build Command:</strong><br>
+              - Run <code>npm run build</code> (or configured alternative).<br>
+              - Check exit code. Must be <code>0</code>.
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="timeline-step">
+          <div class="timeline-node">6</div>
+          <div class="timeline-card" onclick="toggleDetail(this)">
+            <span class="badge badge-step">Verification</span>
+            <h3><i class="fa-brands fa-chrome"></i> DevTools DOM Verification</h3>
+            <p>Starts local dev server, calls <code>playwright</code> / <code>chrome-devtools</code> MCP to navigate to localhost, extracts live rendered DOM, and validates tags.</p>
+            <div class="timeline-detail-panel">
+              <strong>DOM Extraction Script:</strong> Runs JS evaluation to check for <code>document.title</code>, canonical links, exact number of hreflang tags, and parses <code>application/ld+json</code> blocks to verify structured data correctness.
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 7 -->
+        <div class="timeline-step">
+          <div class="timeline-node">7</div>
+          <div class="timeline-card" onclick="toggleDetail(this)">
+            <span class="badge badge-deploy">Deployment</span>
+            <h3><i class="fa-solid fa-circle-arrow-up"></i> Merge, Push & Deploy</h3>
+            <p>Merges the verified branch back into main, pushes to origin, which triggers the target CI/CD (Vercel, Cloudflare, Netlify) to deploy the SEO fixes.</p>
+            <div class="timeline-detail-panel">
+              <strong>Deployment Commands:</strong><br>
+              <code>git checkout main</code><br>
+              <code>git merge --no-ff seo/gsc-audit-2026-06-18</code><br>
+              <code>git push origin main</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 8 -->
+        <div class="timeline-step">
+          <div class="timeline-node">8</div>
+          <div class="timeline-card" onclick="toggleDetail(this)">
+            <span class="badge badge-deploy">Re-indexing</span>
+            <h3><i class="fa-solid fa-check-double"></i> Request Google Re-indexing</h3>
+            <p>Submits changed URLs to Google Search Console to request accelerated crawling, so new SEO improvements are indexed within 48 hours.</p>
+            <div class="timeline-detail-panel">
+              <strong>API calls:</strong> Sends indexing requests to GSC for the homepage and key updated subpages.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Installation & Setup Guides -->
+    <section>
+      <h2><i class="fa-solid fa-sliders"></i> Installation & Setup</h2>
+      
+      <div class="tabs-container">
+        <div class="tabs-menu">
+          <button class="tab-btn active" onclick="switchTab(event, 'tab-install')"><i class="fa-solid fa-download"></i> 1. Installation</button>
+          <button class="tab-btn" onclick="switchTab(event, 'tab-config')"><i class="fa-solid fa-gear"></i> 2. Configuration</button>
+          <button class="tab-btn" onclick="switchTab(event, 'tab-automation')"><i class="fa-solid fa-robot"></i> 3. Automation Loop</button>
+        </div>
+
+        <!-- Install Tab -->
+        <div id="tab-install" class="tab-content active">
+          <div class="code-title">
+            <span>One-click Installer (macOS/Linux)</span>
+            <button class="code-copy" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <pre><code># Clone and run install.sh
+git clone https://github.com/your-username/ultraman-autonomous-seo.git
+cd ultraman-autonomous-seo
+chmod +x install.sh && ./install.sh</code></pre>
+
+          <div class="code-title" style="margin-top: 1.5rem;">
+            <span>Cross-platform Installer (Node.js - Windows/Mac/Linux)</span>
+            <button class="code-copy" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <pre><code># Clone and run install.js
+git clone https://github.com/your-username/ultraman-autonomous-seo.git
+cd ultraman-autonomous-seo
+node install.js</code></pre>
+        </div>
+
+        <!-- Config Tab -->
+        <div id="tab-config" class="tab-content">
+          <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.95rem;">
+            Create a <code>.seo-config.json</code> file in the root of your website repository to specify parameters for the AI Agent:
+          </p>
+          <div class="code-title">
+            <span>Project Root: .seo-config.json</span>
+            <button class="code-copy" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <pre><code>{
+  "site_url": "https://your-domain.com/",
+  "repo_path": "/Users/username/Code/your-website-repo",
+  "build_command": "npm run build",
+  "dev_command": "npm run dev",
+  "dev_url": "http://localhost:5173",
+  "supported_languages": ["en", "zh", "ja"],
+  "key_pages": [
+    { "path": "/", "schema_types": ["WebSite", "Organization"], "priority": "homepage" },
+    { "path": "/faq", "schema_types": ["FAQPage"], "priority": "high" }
+  ]
+}</code></pre>
+        </div>
+
+        <!-- Automation Tab -->
+        <div id="tab-automation" class="tab-content">
+          <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.95rem;">
+            Configure your AI Agent to run on a weekly schedule.
+          </p>
+          
+          <div class="code-title">
+            <span>GitHub Actions Workflow (.github/workflows/auto-seo.yml)</span>
+            <button class="code-copy" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> Copy</button>
+          </div>
+          <pre><code>name: Ultraman Auto SEO Loop
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Every Sunday at midnight
+  workflow_dispatch:
+
+jobs:
+  seo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Need full history to merge branches
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies & Build
+        run: npm ci
+
+      - name: Set up GCP Credentials
+        run: |
+          echo "${{ secrets.GCP_SEO_KEY_JSON }}" > gcp-credentials.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$GITHUB_WORKSPACE/gcp-credentials.json" >> $GITHUB_ENV
+
+      - name: Run AI Agent
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+        run: |
+          # Command to invoke your AI Agent CLI
+          npx -y @google/antigravity-cli@latest run \
+            --instruction "Audit website SEO using GSC, implement fixes in a branch, verify build, and merge to main."</code></pre>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    // Copy Text Utility
+    function copyText(text, btn) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+        }, 2000);
+      });
+    }
+
+    // Copy Code Utility
+    function copyCode(btn) {
+      const codeBlock = btn.parentElement.nextElementSibling.querySelector('code');
+      navigator.clipboard.writeText(codeBlock.innerText).then(() => {
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+        }, 2000);
+      });
+    }
+
+    // Toggle Timeline Detail Panel
+    function toggleDetail(card) {
+      card.classList.toggle('active');
+    }
+
+    // Tabs Menu Switcher
+    function switchTab(evt, tabId) {
+      const tabContents = document.getElementsByClassName('tab-content');
+      for (let i = 0; i < tabContents.length; i++) {
+        tabContents[i].classList.remove('active');
+      }
+
+      const tabBtns = document.getElementsByClassName('tab-btn');
+      for (let i = 0; i < tabBtns.length; i++) {
+        tabBtns[i].classList.remove('active');
+      }
+
+      document.getElementById(tabId).classList.add('active');
+      evt.currentTarget.classList.add('active');
+    }
+  </script>
+</body>
+</html>
