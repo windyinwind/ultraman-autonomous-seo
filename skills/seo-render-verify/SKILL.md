@@ -103,13 +103,14 @@ For each value returned, verify against the expected values:
 ### ✅ Canonical URL
 - **Must match** the current page URL exactly (including/excluding trailing slash consistently)
 - If canonical points to a different URL → Google will index the canonical, not this page
-- For localized pages: `https://doodle-sea.com/ja/sea-secrets/` must have canonical `https://doodle-sea.com/ja/sea-secrets/`
+- For localized pages: `<site_url>/<lang>/path` must have canonical `<site_url>/<lang>/path`
 
 ### ✅ Hreflang Links
-- **Must include ALL supported languages** (not just some)
-- **Must include `x-default`** pointing to the canonical/primary language URL
-- Count check: for 11 languages + x-default = 12 total `<link rel="alternate">` tags
-- If count < expected → some locales are missing
+- **Only required if `supported_languages` count is greater than 1.** Single-language sites do not need hreflang tags.
+- **Must include ALL supported languages** (not just some) as specified in `supported_languages` configuration.
+- **Must include `x-default`** pointing to the canonical/primary language URL.
+- Count check: if `N` languages are supported, expect `N` language alternate tags + 1 `x-default` tag (a total of `N + 1` tags).
+- If count < expected → some locales are missing.
 
 ### ✅ Structured Data (JSON-LD)
 Verify the correct `@type` is present for each page:
