@@ -20,9 +20,9 @@ The plugin supports **two-level configuration**: a global default and a project-
 Always load in this priority order:
 
 ### Priority 1: Project-local config (highest priority)
-Look for `.antigravity/seo-config.json` in the **current working directory** (the project root):
+Look for `.seo-config.json` in the **current working directory** (the project root):
 ```
-<project_root>/.antigravity/seo-config.json
+<project_root>/.seo-config.json
 ```
 
 ### Priority 2: Global plugin config (fallback)
@@ -36,7 +36,7 @@ If no config is found, ask the user for:
 - `site_url` — the GSC property URL (e.g. `https://mysite.com/`)
 - `repo_path` — absolute path to the website repository
 
-Then offer to create `.antigravity/seo-config.json` in the project root for future use.
+Then offer to create `.seo-config.json` in the project root for future use.
 
 ### Config Fields Reference
 | Field | Required | Description |
@@ -51,7 +51,7 @@ Then offer to create `.antigravity/seo-config.json` in the project root for futu
 | `dev_url` | ❌ | Local dev URL (default: `http://localhost:5173`) |
 | `sitemap_script` | ❌ | Path to sitemap generation script |
 
-**Example `.antigravity/seo-config.json` for a new project:**
+**Example `.seo-config.json` for a new project:**
 ```json
 {
   "site_url": "https://mysite.com/",

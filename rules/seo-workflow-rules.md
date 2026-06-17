@@ -19,7 +19,7 @@
 6. **ALWAYS run `npm run build` (or equivalent) after changes and before committing.**  
    Broken builds ship broken SEO.
 
-7. **ALWAYS read configuration from the project-local `.antigravity/seo-config.json` or fallback plugin `config.json`** to get the site URL, repo path, and credentials path before starting any workflow.
+7. **ALWAYS read configuration from the project-local `.seo-config.json` or fallback plugin `config.json`** to get the site URL, repo path, and credentials path before starting any workflow.
 
 ## Data Interpretation Rules
 

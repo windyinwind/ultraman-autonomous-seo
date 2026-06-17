@@ -1,8 +1,8 @@
-# Antigravity SEO Optimizer Plugin
+# AI Agent SEO Optimizer
 
-A data-driven, production-grade SEO optimization plugin for **Antigravity** AI coding agents. 
+A data-driven, production-grade SEO optimization plugin for **AI Coding Agents** (such as Gemini, Claude, Codex, etc.).
 
-This plugin connects your Antigravity agent directly to **Google Search Console** and **Chrome DevTools**, enabling a completely automated and highly disciplined workflow:
+This plugin connects your AI coding agent directly to **Google Search Console** and **Chrome DevTools**, enabling a completely automated and highly disciplined workflow:
 1. **Pull real-time performance data** from Google Search Console (via GSC MCP).
 2. **Analyze opportunities** (impressions, clicks, CTR, and search queries) according to Google's official SEO guidelines.
 3. **Implement optimized modifications** (JSON-LD structured data, metadata, canonicals, hreflang, etc.) in a safe Git branch.
@@ -14,7 +14,7 @@ This plugin connects your Antigravity agent directly to **Google Search Console*
 ## 📁 Repository Structure
 
 ```
-antigravity-seo-optimizer/
+seo-optimizer-plugin/
 ├── plugin.json             # Plugin definition & metadata
 ├── config.example.json     # Global config template
 ├── install.sh              # One-click Bash installer (macOS/Linux)
@@ -32,15 +32,15 @@ antigravity-seo-optimizer/
 
 ## 🚀 Installation
 
-You can install this plugin globally in your Antigravity configuration directory (`~/.gemini/config/plugins/`).
+You can install this plugin globally in your local configuration directory.
 
 ### Option 1: Using Bash (macOS/Linux)
 
 Clone this repository and run the installer:
 
 ```bash
-git clone https://github.com/your-username/antigravity-seo-optimizer.git
-cd antigravity-seo-optimizer
+git clone https://github.com/your-username/seo-optimizer-plugin.git
+cd seo-optimizer-plugin
 ./install.sh
 ```
 
@@ -49,8 +49,8 @@ cd antigravity-seo-optimizer
 If you are on Windows or prefer Node.js:
 
 ```bash
-git clone https://github.com/your-username/antigravity-seo-optimizer.git
-cd antigravity-seo-optimizer
+git clone https://github.com/your-username/seo-optimizer-plugin.git
+cd seo-optimizer-plugin
 node install.js
 ```
 
@@ -73,12 +73,12 @@ The plugin requires the Google Search Console MCP server to run. Ensure your Goo
 The plugin first looks for a project-specific config file. If not found, it falls back to the global config.
 
 #### 1. Project-level Config (Recommended)
-Create a `.antigravity/seo-config.json` file in the root of your project:
+Create a `.seo-config.json` file in the root of your project:
 
 ```json
 {
-  "site_url": "https://doodle-sea.com/",
-  "repo_path": "/Users/username/Code/doodle-sea-web",
+  "site_url": "https://your-domain.com/",
+  "repo_path": "/Users/username/Code/your-website-repo",
   "build_command": "npm run build",
   "dev_command": "npm run dev",
   "dev_url": "http://localhost:5173",
@@ -97,7 +97,7 @@ The install script creates a default configuration file at `~/.gemini/config/plu
 
 ## 🛠 Usage
 
-Once installed, your Antigravity agent gains access to the new skills and workflow rules. Simply prompt the agent to perform an SEO audit or verify your site's SEO:
+Once installed, your AI agent gains access to the new skills and workflow rules. Simply prompt the agent to perform an SEO audit or verify your site's SEO:
 
 ### Example Prompts:
 * *"Audit my website's SEO using Search Console data and optimize the pages."*

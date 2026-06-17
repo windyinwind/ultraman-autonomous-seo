@@ -28,4 +28,4 @@ else
 fi
 
 echo "✅ SEO Optimizer plugin installed successfully!"
-echo "To use it, ask your Antigravity agent: 'Perform an SEO audit using Search Console data' or 'Verify SEO rendering'."
+echo "To use it, ask your AI agent: 'Perform an SEO audit using Search Console data' or 'Verify SEO rendering'."

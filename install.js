@@ -33,7 +33,7 @@ try {
   }
 
   console.log('\x1b[32m✅ SEO Optimizer plugin installed successfully!\x1b[0m');
-  console.log('To use it, ask your Antigravity agent: "Perform an SEO audit using Search Console data" or "Verify SEO rendering".');
+  console.log('To use it, ask your AI agent: "Perform an SEO audit using Search Console data" or "Verify SEO rendering".');
 } catch (err) {
   console.error('\x1b[31m❌ Installation failed:\x1b[0m', err);
   process.exit(1);
