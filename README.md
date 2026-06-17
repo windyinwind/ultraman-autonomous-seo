@@ -1,6 +1,6 @@
-# AI Agent SEO Optimizer
+# Ultraman Autonomous SEO
 
-A data-driven, production-grade SEO optimization plugin for **AI Coding Agents** (such as Gemini, Claude, Codex, etc.).
+An autonomous, data-driven, production-grade SEO optimization plugin for **AI Coding Agents** (such as Gemini, Claude, Codex, etc.).
 
 This plugin connects your AI coding agent directly to **Google Search Console** and **Chrome DevTools**, enabling a completely automated and highly disciplined workflow:
 1. **Pull real-time performance data** from Google Search Console (via GSC MCP).
@@ -14,7 +14,7 @@ This plugin connects your AI coding agent directly to **Google Search Console** 
 ## 📁 Repository Structure
 
 ```
-seo-optimizer-plugin/
+ultraman-autonomous-seo/
 ├── plugin.json             # Plugin definition & metadata
 ├── config.example.json     # Global config template
 ├── install.sh              # One-click Bash installer (macOS/Linux)
@@ -39,8 +39,8 @@ You can install this plugin globally in your local configuration directory.
 Clone this repository and run the installer:
 
 ```bash
-git clone https://github.com/your-username/seo-optimizer-plugin.git
-cd seo-optimizer-plugin
+git clone https://github.com/your-username/ultraman-autonomous-seo.git
+cd ultraman-autonomous-seo
 ./install.sh
 ```
 
@@ -49,8 +49,8 @@ cd seo-optimizer-plugin
 If you are on Windows or prefer Node.js:
 
 ```bash
-git clone https://github.com/your-username/seo-optimizer-plugin.git
-cd seo-optimizer-plugin
+git clone https://github.com/your-username/ultraman-autonomous-seo.git
+cd ultraman-autonomous-seo
 node install.js
 ```
 
@@ -120,7 +120,11 @@ Once installed, your AI agent gains access to the new skills and workflow rules.
 
 ```mermaid
 graph TD
-    A[Prompt: 'Audit SEO'] --> B[Step 1: Fetch GSC Performance & Sitemap Data]
+    T1[GitHub Actions Cron Loop] --> |Triggers Agent via CLI| A[Prompt: 'Audit & Optimize SEO']
+    T2[Local Crontab Schedule] --> |Triggers Agent via CLI| A
+    T3[Manual Developer Request] --> A
+    
+    A --> B[Step 1: Fetch GSC Performance & Sitemap Data]
     B --> C[Step 2: Analyze queries, CTRs, and structured data errors]
     C --> D[Step 3: Create git branch 'seo/gsc-audit-...']
     D --> E[Step 4: Implement JSON-LD, hreflang, & metadata fixes]

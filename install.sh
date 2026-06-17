@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Target installation directory for AI Agent plugins
-TARGET_DIR="$HOME/.gemini/config/plugins/ultraman-auto-seo"
+TARGET_DIR="$HOME/.gemini/config/plugins/ultraman-autonomous-seo"
 
-echo "🚀 Installing Ultraman Auto SEO plugin..."
+echo "🚀 Installing Ultraman Autonomous SEO plugin..."
 
 # Create the directory structure if it doesn't exist
 mkdir -p "$TARGET_DIR/rules"
@@ -27,5 +27,5 @@ else
     echo "👉 Please edit $TARGET_DIR/config.json to customize it for your website."
 fi
 
-echo "✅ Ultraman Auto SEO plugin installed successfully!"
+echo "✅ Ultraman Autonomous SEO plugin installed successfully!"
 echo "To use it, ask your AI agent: 'Perform an SEO audit using Search Console data' or 'Verify SEO rendering'."

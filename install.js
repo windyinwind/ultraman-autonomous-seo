@@ -5,9 +5,9 @@ const path = require('path');
 const os = require('os');
 
 const HOME = os.homedir();
-const TARGET_DIR = path.join(HOME, '.gemini', 'config', 'plugins', 'ultraman-auto-seo');
+const TARGET_DIR = path.join(HOME, '.gemini', 'config', 'plugins', 'ultraman-autonomous-seo');
 
-console.log('🚀 Installing Ultraman Auto SEO plugin...');
+console.log('🚀 Installing Ultraman Autonomous SEO plugin...');
 
 function copyFile(src, dest) {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
@@ -32,7 +32,7 @@ try {
     console.log(`\x1b[36m👉 Please edit ${configDest} to customize it for your website.\x1b[0m`);
   }
 
-  console.log('\x1b[32m✅ Ultraman Auto SEO plugin installed successfully!\x1b[0m');
+  console.log('\x1b[32m✅ Ultraman Autonomous SEO plugin installed successfully!\x1b[0m');
   console.log('To use it, ask your AI agent: "Perform an SEO audit using Search Console data" or "Verify SEO rendering".');
 } catch (err) {
   console.error('\x1b[31m❌ Installation failed:\x1b[0m', err);
