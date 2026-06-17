@@ -66,7 +66,14 @@ Then offer to create `.seo-config.json` in the project root for future use.
 
 ## Step 1: Pull GSC Data (Using search-console MCP)
 
-Pull the following data **in parallel** using the `search-console` MCP:
+### 🚨 Tool Verification
+Before calling any GSC tools, verify if the `search-console` MCP server is registered in your environment.
+- **If missing / not configured:**
+  1. Notify the user: *"Google Search Console MCP server is not installed or configured. For best results, please install the search-console MCP server so I can pull real search data automatically."*
+  2. Ask the user if they would like guidance on installing it, or if they prefer to manually provide the top queries/impressions/CTR data for this audit.
+  3. If they choose manual, prompt them for key search keywords, positions, and CTRs, and proceed to Step 2.
+
+If the tool is available, pull the following data **in parallel** using the `search-console` MCP:
 
 ### 1a. Performance Summary (28d)
 ```

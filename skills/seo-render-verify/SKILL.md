@@ -17,9 +17,13 @@ description: >
 
 ## Prerequisites
 
-- Chrome DevTools MCP must be configured and running
-- The site must be accessible at a URL (localhost dev server or deployed URL)
-- Read [chrome-devtools/SKILL.md](../../../chrome-devtools-plugin/skills/chrome-devtools/SKILL.md) for base Chrome DevTools patterns
+- **Chrome DevTools or Playwright MCP server** must be configured and running.
+- **🚨 Tool Verification:** Before calling any browser tools, verify if `playwright` or `chrome-devtools` MCP server is registered in your environment.
+  - **If missing / not configured:**
+    1. Notify the user: *"Chrome DevTools/Playwright MCP server is not installed. For best results (such as inspecting dynamic client-side rendered HTML), please install the playwright or chrome-devtools MCP server."*
+    2. Ask the user if they would like guidance on installing it, or if they want to skip the live DOM render verification step and perform manual inspections instead.
+- The site must be accessible at a URL (localhost dev server or deployed URL).
+- Read [chrome-devtools/SKILL.md](../../../chrome-devtools-plugin/skills/chrome-devtools/SKILL.md) for base Chrome DevTools patterns.
 
 ---
 

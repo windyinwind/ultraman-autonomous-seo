@@ -54,6 +54,18 @@ cd seo-optimizer-plugin
 node install.js
 ```
 
+## 🚨 Prerequisites & Recommended Tools
+
+To get the full power of this automated workflow, we highly recommend installing the following Model Context Protocol (MCP) servers in your agent's environment:
+
+1. **Google Search Console MCP Server** (Required for Step 1: Auditing)
+   - Allows the agent to pull real search impressions, keywords, CTR, and indexing status directly from Google.
+   - *If missing, the agent will prompt you to enter performance metrics manually.*
+
+2. **Chrome DevTools or Playwright MCP Server** (Required for Step 4: Verification)
+   - Allows the agent to navigate to your local dev server or live URL, run javascript, and inspect the rendered DOM (checking meta tags, canonicals, hreflangs, and JSON-LD).
+   - *If missing, the agent will skip automated browser inspection and prompt you for manual verification.*
+
 ---
 
 ## ⚙️ Configuration
