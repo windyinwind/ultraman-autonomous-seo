@@ -1,5 +1,9 @@
 # Ultraman Autonomous SEO
 
+<p align="center">
+  <img src="images/logo.jpg" alt="Ultraman Autonomous SEO Logo" width="300px" style="border-radius: 12px;"/>
+</p>
+
 An autonomous, data-driven, production-grade SEO optimization plugin for **AI Coding Agents** (such as Gemini, Claude, Codex, etc.).
 
 This plugin connects your AI coding agent directly to **Google Search Console** and **Chrome DevTools**, enabling a completely automated and highly disciplined workflow:
