@@ -1,11 +1,20 @@
 {
   "name": "ultraman-autonomous-seo",
   "version": "1.0.0",
+  "type": "plugin",
   "description": "An autonomous, data-driven SEO optimization plugin for AI coding agents. Uses Google Search Console to identify opportunities, implements Google-recommended fixes in a safe branch, verifies output with Chrome DevTools, and runs fully autonomously in CI/CD cron loops.",
   "author": {
     "name": "Doodle Sea Dev",
     "email": "cs@doodle-sea.com"
   },
+  "skills": [
+    "skills/gsc-seo-audit",
+    "skills/seo-branch-workflow",
+    "skills/seo-render-verify"
+  ],
+  "rules": [
+    "rules/seo-workflow-rules.md"
+  ],
   "keywords": [
     "seo",
     "google-search-console",

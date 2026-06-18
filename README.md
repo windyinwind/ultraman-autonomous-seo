@@ -36,11 +36,9 @@ ultraman-autonomous-seo/
 
 ## 🚀 Installation
 
-You can install this plugin globally in your local configuration directory.
+The plugin installs to a **universal, agent-agnostic location** (`~/.config/ultraman-autonomous-seo/`) and then auto-detects which AI agents are installed on your machine, creating symlinks so every detected agent can find it in its own expected plugin directory.
 
 ### Option 1: Using Bash (macOS/Linux)
-
-Clone this repository and run the installer:
 
 ```bash
 git clone https://github.com/your-username/ultraman-autonomous-seo.git
@@ -50,12 +48,38 @@ cd ultraman-autonomous-seo
 
 ### Option 2: Using Node.js (Windows, macOS, Linux)
 
-If you are on Windows or prefer Node.js:
-
 ```bash
 git clone https://github.com/your-username/ultraman-autonomous-seo.git
 cd ultraman-autonomous-seo
 node install.js
+```
+
+### Custom install path
+
+If you want to install to a different directory, set the `TARGET_DIR` environment variable:
+
+```bash
+TARGET_DIR=/opt/my-agents/plugins/ultraman-autonomous-seo ./install.sh
+# or
+TARGET_DIR=/opt/my-agents/plugins/ultraman-autonomous-seo node install.js
+```
+
+### Auto-detected agents
+
+The installer automatically creates symlinks for the following agents if their config directory is found:
+
+| Agent | Official Plugin Directory | Source |
+|-------|--------------------------|--------|
+| Gemini (Antigravity CLI) | `~/.gemini/config/plugins/ultraman-autonomous-seo` | Gemini/AGY CLI spec |
+| Claude Code | `~/.claude/plugins/ultraman-autonomous-seo` | Claude Code official docs |
+| Cursor | `~/.cursor/plugins/ultraman-autonomous-seo` + `.cursor-plugin/plugin.json` | Cursor community spec |
+| Windsurf / Devin Desktop | `~/.windsurf/plugins/ultraman-autonomous-seo` | Windsurf/Devin docs |
+| Any Agent (generic) | `~/.agents/plugins/ultraman-autonomous-seo` | Open Agent community proposal |
+
+To add support for another agent, manually symlink the install directory:
+
+```bash
+ln -s ~/.config/ultraman-autonomous-seo ~/.your-agent/plugins/ultraman-autonomous-seo
 ```
 
 ## 🚨 Prerequisites & Recommended Tools
@@ -107,7 +131,7 @@ Create a `.seo-config.json` file in the root of your project:
 ```
 
 #### 2. Global Config (Fallback)
-The install script creates a default configuration file at `~/.gemini/config/plugins/seo-optimizer/config.json`. You can edit this file to define default parameters for all projects.
+The install script creates a default configuration file at `~/.config/ultraman-autonomous-seo/config.json`. You can edit this file to define default parameters for all projects. This location is agent-agnostic — it works regardless of which AI coding agent you use.
 
 ---
 
