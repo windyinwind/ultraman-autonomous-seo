@@ -1,23 +1,24 @@
 {
-  "_comment": "SEO Optimizer Plugin Configuration. Copy this file to config.json and edit to configure your site's SEO settings.",
+  "_comment": "SEO Autopilot configuration. Copy to .seo-config.json in your website repo root (recommended) or to ~/.config/seo-autopilot/config.json (global fallback), then edit.",
 
   "site_url": "https://your-domain.com/",
 
   "repo_path": "/absolute/path/to/your/website/repository",
 
-  "gcp_credentials_path": "~/.config/gcloud/application_default_credentials.json",
+  "_gsc_auth_comment": "GSC data is pulled via the search-console MCP server. Default + recommended auth is OAuth (a desktop OAuth client downloaded from Google Cloud). See docs/gsc-mcp-setup.md. Set the path to your OAuth client_secrets.json below. (Service-account auth is also possible — set gcp_credentials_path instead and leave this null.)",
+  "gsc_oauth_client_file": "~/.gsc/client_secrets.json",
+  "gcp_credentials_path": null,
 
   "supported_languages": ["en"],
-
   "default_language": "en",
 
+  "build_command": "npm run build",
+  "dev_command": "npm run dev",
+  "dev_url": "http://localhost:5173",
   "sitemap_script": "scripts/generate_sitemap.mjs",
 
-  "build_command": "npm run build",
-
-  "dev_command": "npm run dev",
-
-  "dev_url": "http://localhost:3000",
+  "_deploy_comment": "auto_merge=false (recommended) makes the agent open a Pull Request instead of merging to main. Set true ONLY for fully unattended loops you trust.",
+  "auto_merge": false,
 
   "key_pages": [
     { "path": "/", "schema_types": ["SoftwareApplication", "WebSite", "Organization"], "priority": "homepage" }

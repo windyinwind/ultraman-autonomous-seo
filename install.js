@@ -1,100 +1,78 @@
 #!/usr/bin/env node
-
 /**
- * Ultraman Autonomous SEO — Universal Installer
- *
- * Works with: Gemini, Claude, Cursor, Windsurf, Copilot, and any AI coding agent.
- * Default install location: ~/.config/ultraman-autonomous-seo/  (XDG standard)
- * Override: TARGET_DIR=/custom/path node install.js
+ * SEO Autopilot — installer (cross-platform: Windows / macOS / Linux)
+ * Installs a canonical copy, wires up the agents we can wire up automatically,
+ * and prints honest, copy-paste steps for the rest.
+ *   Custom location: TARGET_DIR=/custom/path node install.js
  */
-
 const fs   = require('fs');
 const path = require('path');
 const os   = require('os');
 
+const NAME       = 'seo-autopilot';
+const SRC        = __dirname;
 const HOME       = os.homedir();
-const TARGET_DIR = process.env.TARGET_DIR
-  || path.join(HOME, '.config', 'ultraman-autonomous-seo');
+const TARGET_DIR = process.env.TARGET_DIR || path.join(HOME, '.config', NAME);
+const SKILLS     = ['gsc-seo-audit', 'seo-branch-workflow', 'seo-render-verify'];
 
-console.log('🚀 Installing Ultraman Autonomous SEO plugin...');
-console.log(`📂 Target directory: ${TARGET_DIR}`);
-
-function copyFile(src, dest) {
-  fs.mkdirSync(path.dirname(dest), { recursive: true });
-  fs.copyFileSync(src, dest);
-}
+const cp = (src, dest) => { fs.mkdirSync(path.dirname(dest), { recursive: true }); fs.copyFileSync(src, dest); };
+const cpDir = (src, dest) => {
+  if (!fs.existsSync(src)) return;
+  fs.mkdirSync(dest, { recursive: true });
+  for (const e of fs.readdirSync(src, { withFileTypes: true })) {
+    const s = path.join(src, e.name), d = path.join(dest, e.name);
+    e.isDirectory() ? cpDir(s, d) : cp(s, d);
+  }
+};
 
 try {
-  // Copy metadata and skills/rules
-  copyFile(path.join(__dirname, 'plugin.json'),                                   path.join(TARGET_DIR, 'plugin.json'));
-  copyFile(path.join(__dirname, 'rules', 'seo-workflow-rules.md'),                path.join(TARGET_DIR, 'rules', 'seo-workflow-rules.md'));
-  copyFile(path.join(__dirname, 'skills', 'gsc-seo-audit',       'SKILL.md'),    path.join(TARGET_DIR, 'skills', 'gsc-seo-audit',       'SKILL.md'));
-  copyFile(path.join(__dirname, 'skills', 'seo-branch-workflow',  'SKILL.md'),   path.join(TARGET_DIR, 'skills', 'seo-branch-workflow',  'SKILL.md'));
-  copyFile(path.join(__dirname, 'skills', 'seo-render-verify',    'SKILL.md'),   path.join(TARGET_DIR, 'skills', 'seo-render-verify',    'SKILL.md'));
+  console.log('🛫 Installing SEO Autopilot…');
+  console.log(`📂 Canonical location: ${TARGET_DIR}`);
 
-  // Copy config only if it does not already exist
+  // 1. Canonical install
+  cpDir(path.join(SRC, 'skills'),         path.join(TARGET_DIR, 'skills'));
+  cpDir(path.join(SRC, 'rules'),          path.join(TARGET_DIR, 'rules'));
+  cpDir(path.join(SRC, 'docs'),           path.join(TARGET_DIR, 'docs'));
+  cpDir(path.join(SRC, '.claude-plugin'), path.join(TARGET_DIR, '.claude-plugin'));
+  for (const f of ['AGENTS.md', 'plugin.json', 'config.example.json', 'LICENSE']) {
+    cp(path.join(SRC, f), path.join(TARGET_DIR, f));
+  }
+
+  // config.json — never overwrite
   const configDest = path.join(TARGET_DIR, 'config.json');
   if (fs.existsSync(configDest)) {
-    console.log(`\x1b[33m⚠️  Existing config.json found at ${configDest}. Skipping config overwrite.\x1b[0m`);
+    console.log('⚠️  Keeping existing config.json');
   } else {
-    console.log('📝 Creating config.json from template...');
-    copyFile(path.join(__dirname, 'config.example.json'), configDest);
-    console.log(`\x1b[36m👉 Please edit ${configDest} to customize it for your website.\x1b[0m`);
+    cp(path.join(SRC, 'config.example.json'), configDest);
+    console.log(`📝 Created ${configDest} (edit it, or use a per-project .seo-config.json)`);
   }
 
-  console.log(`\n\x1b[32m✅ Plugin installed to: ${TARGET_DIR}\x1b[0m`);
-
-  // ============================================================
-  // Auto-detect installed AI agents and create symlinks so each
-  // agent can find the plugin in its own expected plugin dir.
-  // ============================================================
-  console.log('\n🔍 Detecting installed AI agents...');
-
-  /**
-   * Agents to detect.
-   * Each entry: { name, pluginDir }
-   *   pluginDir — where THIS agent expects plugins to live.
-   *   We check whether the *parent* of pluginDir exists (meaning
-   *   the agent is installed) before creating the symlink.
-   */
-  const AGENTS = [
-    // Gemini / Antigravity CLI  → ~/.gemini/config/plugins/<name>/
-    { name: 'Gemini (Antigravity)', pluginDir: path.join(HOME, '.gemini',  'config', 'plugins', 'ultraman-autonomous-seo') },
-    // Claude Code               → ~/.claude/plugins/<name>/
-    { name: 'Claude Code',         pluginDir: path.join(HOME, '.claude',  'plugins', 'ultraman-autonomous-seo') },
-    // Cursor                    → ~/.cursor/plugins/<name>/  (+ .cursor-plugin/plugin.json)
-    { name: 'Cursor',              pluginDir: path.join(HOME, '.cursor',  'plugins', 'ultraman-autonomous-seo'), cursorPlugin: true },
-    // Windsurf / Devin Desktop   → ~/.windsurf/plugins/<name>/
-    { name: 'Windsurf / Devin Desktop', pluginDir: path.join(HOME, '.windsurf', 'plugins', 'ultraman-autonomous-seo') },
-    // Generic fallback for any agent respecting ~/.agents/plugins/
-    { name: 'Generic (~/.agents)', pluginDir: path.join(HOME, '.agents',  'plugins', 'ultraman-autonomous-seo') },
-  ];
-
-  for (const { name, pluginDir, cursorPlugin } of AGENTS) {
-    const parentDir = path.dirname(pluginDir);
-    if (!fs.existsSync(parentDir)) continue; // agent not installed — skip
-
-    if (fs.existsSync(pluginDir)) {
-      console.log(`  \x1b[32m✔ ${name}\x1b[0m — already linked at ${pluginDir}`);
-    } else {
-      fs.mkdirSync(parentDir, { recursive: true });
-      fs.symlinkSync(TARGET_DIR, pluginDir, 'junction');
-      // Cursor requires an extra .cursor-plugin/plugin.json inside the plugin dir
-      if (cursorPlugin) {
-        const cursorManifestDir = path.join(pluginDir, '.cursor-plugin');
-        fs.mkdirSync(cursorManifestDir, { recursive: true });
-        fs.copyFileSync(path.join(__dirname, 'plugin.json'), path.join(cursorManifestDir, 'plugin.json'));
-        console.log(`  \x1b[36m🔗 ${name}\x1b[0m — symlink + .cursor-plugin/ created at ${pluginDir}`);
-      } else {
-        console.log(`  \x1b[36m🔗 ${name}\x1b[0m — symlink created at ${pluginDir}`);
-      }
-    }
+  // 2. Claude Code — personal skills (these actually load)
+  if (fs.existsSync(path.join(HOME, '.claude'))) {
+    for (const s of SKILLS) cp(path.join(SRC, 'skills', s, 'SKILL.md'), path.join(HOME, '.claude', 'skills', s, 'SKILL.md'));
+    console.log('  ✅ Claude Code — installed 3 skills to ~/.claude/skills/ (restart Claude to load)');
   }
 
-  console.log('\n\x1b[32m🎉 Done! Ask any AI agent: "Perform an SEO audit using Search Console data".\x1b[0m');
-  console.log(`   To add another agent, symlink ${TARGET_DIR} into that agent's plugin directory.`);
+  // 3. Gemini CLI — skills dir (if present)
+  if (fs.existsSync(path.join(HOME, '.gemini'))) {
+    for (const s of SKILLS) cp(path.join(SRC, 'skills', s, 'SKILL.md'), path.join(HOME, '.gemini', 'skills', s, 'SKILL.md'));
+    console.log('  ✅ Gemini CLI — copied skills to ~/.gemini/skills/');
+  }
 
+  const line = '──────────────────────────────────────────────────────────────────────────';
+  console.log(`\n✅ Installed.\n\n${line}`);
+  console.log('EVERY OTHER AGENT (Codex, Cursor, Windsurf, Aider, Zed, …) — 1 step:');
+  console.log('  Copy AGENTS.md into the root of the WEBSITE repo you want optimized:');
+  console.log(`      cp "${path.join(TARGET_DIR, 'AGENTS.md')}" /path/to/your/website/AGENTS.md`);
+  console.log('  These agents read AGENTS.md automatically and gain the full workflow.\n');
+  console.log('REQUIRED — connect Google Search Console (the data source):');
+  console.log(`  Follow: ${path.join(TARGET_DIR, 'docs', 'gsc-mcp-setup.md')}   (~10 min, one time)\n`);
+  console.log('RECOMMENDED — for render verification, connect the Chrome DevTools MCP:');
+  console.log('  claude mcp add chrome-devtools -- npx -y chrome-devtools-mcp@latest');
+  console.log('  (or the equivalent mcpServers entry for your agent)\n');
+  console.log('Then ask your agent: "Audit my SEO using Search Console data and optimize it."');
+  console.log(line);
 } catch (err) {
-  console.error('\x1b[31m❌ Installation failed:\x1b[0m', err);
+  console.error('❌ Installation failed:', err);
   process.exit(1);
 }

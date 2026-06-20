@@ -1,89 +1,69 @@
-#!/bin/bash
-
+#!/usr/bin/env bash
 # =============================================================================
-# Ultraman Autonomous SEO — Universal Installer
-# Works with: Gemini, Claude, Cursor, Codex, Copilot, and any AI coding agent.
-# Default install: ~/.config/ultraman-autonomous-seo/ (XDG standard)
-# Override:  TARGET_DIR=/custom/path ./install.sh
+# SEO Autopilot — installer (macOS / Linux)
+# Installs a canonical copy, wires up the agents we can wire up automatically,
+# and prints honest, copy-paste steps for the rest. Cross-platform Node version:
+# `node install.js`.
+#   Custom location: TARGET_DIR=/custom/path ./install.sh
 # =============================================================================
+set -euo pipefail
 
-# --- Resolve install target ---
-TARGET_DIR="${TARGET_DIR:-$HOME/.config/ultraman-autonomous-seo}"
+NAME="seo-autopilot"
+SRC="$(cd "$(dirname "$0")" && pwd)"
+TARGET_DIR="${TARGET_DIR:-$HOME/.config/$NAME}"
 
-echo "🚀 Installing Ultraman Autonomous SEO plugin..."
-echo "📂 Target directory: $TARGET_DIR"
+echo "🛫 Installing SEO Autopilot…"
+echo "📂 Canonical location: $TARGET_DIR"
 
-# Create the directory structure
-mkdir -p "$TARGET_DIR/rules"
-mkdir -p "$TARGET_DIR/skills/gsc-seo-audit"
-mkdir -p "$TARGET_DIR/skills/seo-branch-workflow"
-mkdir -p "$TARGET_DIR/skills/seo-render-verify"
+# --- 1. Canonical install -----------------------------------------------------
+mkdir -p "$TARGET_DIR"
+cp -R "$SRC/skills" "$SRC/rules" "$SRC/docs" "$TARGET_DIR/"
+cp "$SRC/AGENTS.md" "$SRC/plugin.json" "$SRC/config.example.json" "$SRC/LICENSE" "$TARGET_DIR/"
+cp -R "$SRC/.claude-plugin" "$TARGET_DIR/" 2>/dev/null || true
 
-# Copy plugin files
-cp plugin.json "$TARGET_DIR/"
-cp rules/seo-workflow-rules.md "$TARGET_DIR/rules/"
-cp skills/gsc-seo-audit/SKILL.md "$TARGET_DIR/skills/gsc-seo-audit/"
-cp skills/seo-branch-workflow/SKILL.md "$TARGET_DIR/skills/seo-branch-workflow/"
-cp skills/seo-render-verify/SKILL.md "$TARGET_DIR/skills/seo-render-verify/"
-
-# Handle config.json — never overwrite an existing one
+# config.json — never overwrite an existing one
 if [ -f "$TARGET_DIR/config.json" ]; then
-    echo "⚠️  Existing config.json found at $TARGET_DIR/config.json. Skipping config overwrite."
+  echo "⚠️  Keeping existing config.json"
 else
-    echo "📝 Creating config.json from template..."
-    cp config.example.json "$TARGET_DIR/config.json"
-    echo "👉 Please edit $TARGET_DIR/config.json to customize it for your website."
+  cp "$SRC/config.example.json" "$TARGET_DIR/config.json"
+  echo "📝 Created $TARGET_DIR/config.json (edit it, or use a per-project .seo-config.json)"
+fi
+
+SKILLS=(gsc-seo-audit seo-branch-workflow seo-render-verify)
+
+# --- 2. Claude Code: personal skills (these actually load) --------------------
+if [ -d "$HOME/.claude" ]; then
+  for s in "${SKILLS[@]}"; do
+    mkdir -p "$HOME/.claude/skills/$s"
+    cp "$SRC/skills/$s/SKILL.md" "$HOME/.claude/skills/$s/SKILL.md"
+  done
+  echo "  ✅ Claude Code — installed 3 skills to ~/.claude/skills/ (restart Claude to load)"
+fi
+
+# --- 3. Gemini CLI: skills dir (if present) -----------------------------------
+if [ -d "$HOME/.gemini" ]; then
+  for s in "${SKILLS[@]}"; do
+    mkdir -p "$HOME/.gemini/skills/$s"
+    cp "$SRC/skills/$s/SKILL.md" "$HOME/.gemini/skills/$s/SKILL.md"
+  done
+  echo "  ✅ Gemini CLI — copied skills to ~/.gemini/skills/"
 fi
 
 echo ""
-echo "✅ Plugin installed to: $TARGET_DIR"
-
-# =============================================================================
-# Auto-detect installed AI agents and create symlinks so each agent can find
-# the plugin in its own expected configuration directory.
-# =============================================================================
+echo "✅ Installed."
 echo ""
-echo "🔍 Detecting installed AI agents..."
-
-link_plugin() {
-  local AGENT_NAME="$1"
-  local AGENT_PLUGIN_DIR="$2"
-  if [ -d "$(dirname "$AGENT_PLUGIN_DIR")" ]; then
-    if [ -e "$AGENT_PLUGIN_DIR" ]; then
-      echo "  ✔ $AGENT_NAME — already linked at $AGENT_PLUGIN_DIR"
-    else
-      ln -s "$TARGET_DIR" "$AGENT_PLUGIN_DIR"
-      echo "  🔗 $AGENT_NAME — symlink created at $AGENT_PLUGIN_DIR"
-    fi
-  fi
-}
-
-# Gemini / Antigravity CLI  → ~/.gemini/config/plugins/<name>/
-link_plugin "Gemini (Antigravity)" "$HOME/.gemini/config/plugins/ultraman-autonomous-seo"
-
-# Claude Code              → ~/.claude/plugins/<name>/
-link_plugin "Claude Code"          "$HOME/.claude/plugins/ultraman-autonomous-seo"
-
-# Cursor                   → ~/.cursor/plugins/<name>/  (+.cursor-plugin/plugin.json)
-if [ -d "$HOME/.cursor" ]; then
-  CURSOR_PLUGIN_DIR="$HOME/.cursor/plugins/ultraman-autonomous-seo"
-  if [ -e "$CURSOR_PLUGIN_DIR" ]; then
-    echo "  ✔ Cursor — already linked at $CURSOR_PLUGIN_DIR"
-  else
-    ln -s "$TARGET_DIR" "$CURSOR_PLUGIN_DIR"
-    # Cursor also needs .cursor-plugin/plugin.json inside the plugin dir
-    mkdir -p "$CURSOR_PLUGIN_DIR/.cursor-plugin"
-    cp plugin.json "$CURSOR_PLUGIN_DIR/.cursor-plugin/plugin.json"
-    echo "  🔗 Cursor — symlink + .cursor-plugin/ created at $CURSOR_PLUGIN_DIR"
-  fi
-fi
-
-# Windsurf (rebranded Devin Desktop) → ~/.windsurf/plugins/<name>/
-link_plugin "Windsurf / Devin Desktop" "$HOME/.windsurf/plugins/ultraman-autonomous-seo"
-
-# Generic fallback for any agent that respects ~/.agents/plugins/
-link_plugin "Generic (~/.agents)"  "$HOME/.agents/plugins/ultraman-autonomous-seo"
-
+echo "──────────────────────────────────────────────────────────────────────────"
+echo "EVERY OTHER AGENT (Codex, Cursor, Windsurf, Aider, Zed, …) — 1 step:"
+echo "  Copy AGENTS.md into the root of the WEBSITE repo you want optimized:"
+echo "      cp \"$TARGET_DIR/AGENTS.md\" /path/to/your/website/AGENTS.md"
+echo "  These agents read AGENTS.md automatically and gain the full workflow."
 echo ""
-echo "🎉 Done! Ask any AI agent: 'Perform an SEO audit using Search Console data'."
-echo "   To add support for another agent, symlink $TARGET_DIR into that agent's plugin directory."
+echo "REQUIRED — connect Google Search Console (the data source):"
+echo "  Follow: $TARGET_DIR/docs/gsc-mcp-setup.md   (~10 min, one time)"
+echo ""
+echo "RECOMMENDED — for render verification, connect the Chrome DevTools MCP:"
+echo "  claude mcp add chrome-devtools -- npx -y chrome-devtools-mcp@latest"
+echo "  (or the equivalent mcpServers entry for your agent)"
+echo ""
+echo "Then ask your agent:  \"Audit my SEO using Search Console data and optimize it.\""
+echo "──────────────────────────────────────────────────────────────────────────"

@@ -1,236 +1,204 @@
 ---
 name: seo-render-verify
 description: >
-  Verifies that SEO meta tags, structured data, and hreflang attributes are
-  correctly rendered in the browser DOM after JavaScript execution. Use AFTER
-  implementing SEO changes, especially for React/Vue/Angular/Next.js SPAs where
-  tags are injected dynamically. Uses Chrome DevTools MCP to inspect live DOM.
-  Trigger on: "verify SEO tags", "check if meta tags rendered", "confirm structured
-  data in DOM", "SEO DevTools check", "inspect rendered head tags".
+  Verifies that SEO meta tags, structured data, and hreflang are correctly
+  present in BOTH the raw HTML response (what crawlers/SSR/prerender serve) AND
+  the live rendered DOM (what JavaScript produces), and flags any mismatch. Use
+  AFTER implementing SEO changes — especially for React/Vue/Angular/Next.js SPAs
+  and prerendered/SSG sites where the indexed value can differ from what you
+  edited. Prefers the Chrome DevTools MCP. Trigger on: "verify SEO tags", "check
+  if meta tags rendered", "confirm structured data", "SEO DevTools check",
+  "did my title/keywords actually ship".
 ---
 
 # SEO Render Verification Skill
 
-**Purpose:** Single-page applications (React, Vue, Next.js) inject `<title>`, `<meta>`, and `<script type="application/ld+json">` via JavaScript at runtime. The HTML source may show placeholder values while the rendered DOM shows the correct values — or vice versa. This skill uses Chrome DevTools to verify the **live rendered DOM**, not the HTML source.
+**Why this exists.** The value a developer edits in a component is not always the
+value Google indexes. There are three different layers and they can disagree:
+
+1. **Raw HTML response** — what `curl` returns. This is what most crawlers, SSR,
+   static prerendering, social scrapers, and many AI bots read **first** (they
+   don't run JS). For prerendered/SSG sites, *this is what Google indexes.*
+2. **Rendered DOM** — what you get after JavaScript executes. Googlebot does
+   render, but on a delay; CSR-only tags live only here.
+3. **What you edited** — a component, a prerender script, a locale file…
+
+> **Real-world failure this catches:** a site's species pages had their `<title>`
+> set in a **prerender script**, while the React component set a *different*
+> title client-side. Checking only the DOM would show the React title and look
+> fine — but Google indexed the prerendered HTML title. Only a **raw-HTML ↔ DOM
+> diff** surfaces this.
+
+So this skill always checks **both layers and diffs them.**
 
 ---
 
 ## Prerequisites
 
-- **Chrome DevTools or Playwright MCP server** must be configured and running.
-- **🚨 Tool Verification:** Before calling any browser tools, verify if `playwright` or `chrome-devtools` MCP server is registered in your environment.
-  - **If missing / not configured:**
-    1. Notify the user: *"Chrome DevTools/Playwright MCP server is not installed. For best results (such as inspecting dynamic client-side rendered HTML), please install the playwright or chrome-devtools MCP server."*
-    2. Ask the user if they would like guidance on installing it, or if they want to skip the live DOM render verification step and perform manual inspections instead.
-- The site must be accessible at a URL (localhost dev server or deployed URL).
-- Read [chrome-devtools/SKILL.md](../../../chrome-devtools-plugin/skills/chrome-devtools/SKILL.md) for base Chrome DevTools patterns.
+- A URL to check: a local dev/preview server (`dev_url` from config) or the
+  deployed site.
+- For the DOM layer, a browser MCP. **Recommended: Chrome DevTools MCP**
+  (lighter, no separate browser download in most setups). Playwright MCP also works.
+
+### 🚨 Tool verification
+Check whether `chrome-devtools` (preferred) or `playwright` MCP is connected.
+- **If neither is connected:** tell the user and offer setup:
+  - **Chrome DevTools MCP (recommended):**
+    `claude mcp add chrome-devtools -- npx -y chrome-devtools-mcp@latest`
+    (or the equivalent `mcpServers` entry for Codex/Gemini/Cursor/Windsurf).
+  - You can still do the **raw-HTML layer with `curl` alone** (no browser MCP
+    needed) — do that and clearly note the DOM layer was skipped.
 
 ---
 
-## Step 1: Navigate to the Page
+## Layer A — Raw HTML response (always; needs only curl)
 
-```
-browser_navigate(url=<page_url>)
+For each page URL, fetch the served HTML and extract the head SEO tags:
+
+```bash
+curl -sL "<page_url>" -A "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)" \
+  | grep -ioE '<title>[^<]*</title>|<meta[^>]+(name|property)="(description|robots|og:title|og:description|og:image)"[^>]*>|<link[^>]+rel="(canonical|alternate)"[^>]*>|<html[^>]+lang="[^"]*"' \
+  | head -50
 ```
 
-Wait for full JS execution:
-```
-browser_wait_for(selector="head title", timeout=5000)
+Also confirm JSON-LD is present in the source:
+```bash
+curl -sL "<page_url>" | grep -c 'application/ld+json'
 ```
 
-For React apps, also wait for the app root to be populated:
-```
-browser_wait_for(selector="#root > *", timeout=5000)
-```
+Record the raw-HTML `<title>`, description, canonical, hreflang set, and JSON-LD
+count. **This is the crawler/index-truth baseline.**
 
 ---
 
-## Step 2: Extract and Verify All SEO Tags
+## Layer B — Rendered DOM (Chrome DevTools MCP preferred)
 
-Use a single `browser_evaluate` call to extract all critical SEO data from the rendered DOM:
+Navigate and let JS run, then extract the same fields from the live DOM.
+
+**Chrome DevTools MCP tools:** `navigate_page`, `wait_for`, `evaluate_script`,
+`take_snapshot`, `take_screenshot`.
+**Playwright MCP equivalents:** `browser_navigate`, `browser_wait_for`,
+`browser_evaluate`, `browser_take_screenshot`.
+
+1. `navigate_page(url=<page_url>)`
+2. Wait for the SPA to hydrate (e.g. `wait_for` text that only appears post-render,
+   or a short delay).
+3. Run this extraction via `evaluate_script` (Chrome DevTools) /
+   `browser_evaluate` (Playwright):
 
 ```javascript
-// Run this in browser_evaluate
-(() => {
+() => {
   const get = (sel, attr) => {
     const el = document.querySelector(sel);
     return el ? (attr ? el.getAttribute(attr) : el.textContent?.trim()) : null;
   };
   const getAll = (sel, attr) =>
     [...document.querySelectorAll(sel)].map(el => attr ? el.getAttribute(attr) : el.textContent?.trim());
-
-  // Extract structured data
   let structuredData = [];
   try {
-    const scripts = document.querySelectorAll('script[type="application/ld+json"]');
-    structuredData = [...scripts].map(s => JSON.parse(s.textContent));
-  } catch(e) { structuredData = ['PARSE_ERROR: ' + e.message]; }
-
+    structuredData = [...document.querySelectorAll('script[type="application/ld+json"]')]
+      .map(s => JSON.parse(s.textContent));
+  } catch (e) { structuredData = ['PARSE_ERROR: ' + e.message]; }
   return {
     title: document.title,
     canonical: get('link[rel="canonical"]', 'href'),
     description: get('meta[name="description"]', 'content'),
     robots: get('meta[name="robots"]', 'content'),
     ogTitle: get('meta[property="og:title"]', 'content'),
-    ogDescription: get('meta[property="og:description"]', 'content'),
     ogImage: get('meta[property="og:image"]', 'content'),
-    twitterCard: get('meta[name="twitter:card"]', 'content'),
     lang: document.documentElement.lang,
     dir: document.documentElement.dir,
     h1Count: document.querySelectorAll('h1').length,
     h1Text: get('h1'),
     hreflang: getAll('link[rel="alternate"][hreflang]', 'hreflang'),
-    hreflangUrls: getAll('link[rel="alternate"][hreflang]', 'href'),
-    structuredData,
+    structuredDataTypes: structuredData.flat().map(d => d && d['@type']).filter(Boolean),
+    ldJsonCount: document.querySelectorAll('script[type="application/ld+json"]').length,
   };
-})()
+}
 ```
 
 ---
 
-## Step 3: Validate Each Critical Element
+## Step C — Diff the two layers (the important part)
 
-For each value returned, verify against the expected values:
+| Field | Raw HTML (curl) | Rendered DOM | Match? | Verdict |
+|-------|-----------------|--------------|--------|---------|
+| `<title>` | … | … | ✅/❌ | If different → decide which Google indexes (prerendered/SSG → raw HTML wins) and fix that layer |
+| description | … | … | ✅/❌ | |
+| canonical | … | … | ✅/❌ | |
+| hreflang count | … | … | ✅/❌ | |
+| JSON-LD count/types | … | … | ✅/❌ | |
 
-### ✅ Title Tag
-- **Must contain** the primary keyword for the page
-- **Length:** 30–60 characters (truncated at ~580px in Google)
-- **Must NOT be** the same as other pages (duplicate titles hurt rankings)
-- **React SPA note:** If title shows the `index.html` placeholder instead of the page-specific title, the Seo component's `useEffect` hasn't fired — check for hydration errors
+**Interpretation:**
+- **Tag present in DOM but missing from raw HTML** → it's injected only by client
+  JS. Crawlers that don't render (and the first-pass index) miss it. For a
+  prerendered/SSG site this means your edit didn't reach the prerender step — fix
+  the prerender script / build, not just the component.
+- **Tag differs between raw HTML and DOM** → two sources of truth are fighting
+  (e.g. a prerender template vs a runtime `useEffect`). Make them agree; the
+  prerendered value is usually the one indexed.
+- **Tag present in raw HTML and DOM and equal** → ✅ shipped correctly.
 
-### ✅ Meta Description
-- **Length:** 120–160 characters (longer is truncated)
-- **Must contain** the target keyword naturally
-- **Must be unique** per page
-- If `null` → Google will auto-generate from page content (not ideal)
+---
 
-### ✅ Canonical URL
-- **Must match** the current page URL exactly (including/excluding trailing slash consistently)
-- If canonical points to a different URL → Google will index the canonical, not this page
-- For localized pages: `<site_url>/<lang>/path` must have canonical `<site_url>/<lang>/path`
+## Step D — Validate values (per page)
 
-### ✅ Hreflang Links
-- **Only required if `supported_languages` count is greater than 1.** Single-language sites do not need hreflang tags.
-- **Must include ALL supported languages** (not just some) as specified in `supported_languages` configuration.
-- **Must include `x-default`** pointing to the canonical/primary language URL.
-- Count check: if `N` languages are supported, expect `N` language alternate tags + 1 `x-default` tag (a total of `N + 1` tags).
-- If count < expected → some locales are missing.
-
-### ✅ Structured Data (JSON-LD)
-Verify the correct `@type` is present for each page:
-
-```javascript
-// Check for a specific @type in structuredData array
-const hasType = (type) => structuredData.some(d => 
-  d['@type'] === type || (Array.isArray(d) && d.some(item => item['@type'] === type))
-);
-```
+- **Title:** contains the target keyword; 30–60 chars; unique per page; not the
+  `index.html` placeholder.
+- **Description:** 120–160 chars; contains the keyword naturally; unique.
+- **Canonical:** exactly the page URL (trailing-slash consistent); localized
+  pages self-canonical to their localized URL.
+- **Hreflang:** only if `supported_languages > 1` — expect `N` language tags + 1
+  `x-default` (`N + 1` total); every locale references all others.
+- **JSON-LD:** correct `@type` per page; valid JSON; describes visible content
+  only. Validate at <https://search.google.com/test/rich-results>.
+- **One `<h1>`**; `lang`/`dir` correct (`rtl` only for Arabic etc.).
 
 | Page | Expected @type(s) |
 |------|------------------|
 | Homepage | `SoftwareApplication`, `WebSite`, `Organization` |
 | FAQ | `FAQPage` |
 | How-to | `HowTo` |
-| Article/Creature | `Article`, `BreadcrumbList` |
-| Sketch-Ocean | `BreadcrumbList`, `WebPage` |
-
-### ✅ Single H1
-- `h1Count` must be exactly `1`
-- Multiple H1s confuse Google's content hierarchy
-- `h1Text` should contain the primary keyword
-
-### ✅ Language and Direction
-- `lang` attribute must match the locale (`en`, `ja`, `ar`, etc.)
-- `dir` must be `rtl` for Arabic, `ltr` for all others
+| Article / content | `Article`, `BreadcrumbList` |
+| Product | `Product` (+ real `AggregateRating`/`Review` only if genuine) |
 
 ---
 
-## Step 4: Navigate Through Key Pages Systematically
-
-For a full site audit, check these pages in order:
-
-```
-1. Homepage          → / or /[lang]/
-2. Key landing page  → /sketch-ocean or /draw-fish-app
-3. FAQ page          → /faq
-4. Content page      → /sea-secrets/[slug] (pick a top-impression creature)
-5. Localized version → /ja/ or /ar/ (check RTL for Arabic)
-```
-
-For each page, run the Step 2 JS extraction and compare against expected values.
-
----
-
-## Step 5: Take a Screenshot for Documentation
-
-After verification, take a screenshot of the browser's DevTools "Elements" panel showing the `<head>` section:
-
-```
-browser_take_screenshot()
-```
-
-This creates a visual record of the rendered tags for future comparison.
-
----
-
-## Step 6: Report Results
-
-Create a verification report with:
+## Step E — Report
 
 ```markdown
-## SEO Render Verification Report — [Date]
+## SEO Render Verification — [date]
+### [URL]
+| Field | Raw HTML | DOM | Match | Notes |
+|-------|----------|-----|-------|-------|
+| title | … | … | ✅/❌ | |
+| description (len) | … | … | ✅/❌ | |
+| canonical | … | … | ✅/❌ | |
+| hreflang count | N+1 | … | ✅/❌ | |
+| JSON-LD @types | […] | […] | ✅/❌ | |
+| h1 count | 1 | … | ✅/❌ | |
 
-### Page: [URL]
-| Check | Expected | Actual | Status |
-|-------|----------|--------|--------|
-| Title | "..." | "..." | ✅/❌ |
-| Description length | 120-160 chars | X chars | ✅/❌ |
-| Canonical | https://... | https://... | ✅/❌ |
-| Hreflang count | 12 | X | ✅/❌ |
-| Structured data @types | [...] | [...] | ✅/❌ |
-| H1 count | 1 | X | ✅/❌ |
-| lang attribute | en | en | ✅/❌ |
-
-### Issues Found
-- [ ] Issue 1: ...
-- [ ] Issue 2: ...
-
-### Passed
-- [x] All hreflang tags present
-- [x] Structured data valid JSON
+**Layer mismatches:** …
+**Action items:** …
 ```
+
+Optionally `take_screenshot` of the rendered page for a visual record.
 
 ---
 
-## Common Issues in React/Next.js SPAs
+## Common SPA / prerender issues
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
-| Title shows index.html default value | `useEffect` SEO hook not firing | Check component mounting, add prerender step |
-| Hreflang missing in DOM but in source | SSR vs CSR mismatch | Ensure tags are in prerendered HTML |
-| `<script type="application/ld+json">` empty | JSON serialization error | Check for circular references, use `JSON.stringify()` |
-| `lang` attribute wrong | `i18n` not initialized before Seo component | Move lang setter to router-level |
-| Description truncated in Google | > 160 characters in content | Trim to 155 chars max |
-
----
-
-## Quick Validation Command
-
-For fast single-page checks, use this minimal command in `browser_evaluate`:
-```javascript
-({
-  title: document.title,
-  desc: document.querySelector('meta[name="description"]')?.content?.length + ' chars',
-  canonical: document.querySelector('link[rel="canonical"]')?.href,
-  ldJson: document.querySelectorAll('script[type="application/ld+json"]').length + ' scripts',
-  hreflang: document.querySelectorAll('link[rel="alternate"]').length + ' links',
-  h1: document.querySelectorAll('h1').length,
-})
-```
+| Title in DOM but not in raw HTML | Set only by client JS (`useEffect`) | Add/repair prerendering (SSG/SSR) so the tag is in the served HTML |
+| Raw HTML title ≠ DOM title | Prerender template vs runtime setter disagree | Make both produce the same value; prerendered value is indexed |
+| `keywords`/meta "not showing up" after edit | Edited the component but the build prerenders from a separate script/data file | Find the prerender/build source of truth and edit there; rebuild |
+| JSON-LD empty | Serialization error | `JSON.stringify`, no circular refs |
+| `lang` wrong | i18n not ready before tags set | Set lang at router level / in the prerender |
 
 ---
 
 ## References
-- [Google: Understand JavaScript SEO Basics](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics)
+- [Google: JavaScript SEO basics](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics)
 - [Google: Rich Results Test](https://search.google.com/test/rich-results)
-- [Chrome DevTools: Elements Panel](https://developer.chrome.com/docs/devtools/elements/)
+- [Chrome DevTools MCP](https://github.com/ChromeDevTools/chrome-devtools-mcp)

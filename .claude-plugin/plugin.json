@@ -1,0 +1,22 @@
+{
+  "name": "seo-autopilot",
+  "version": "2.0.0",
+  "description": "Self-driving, data-driven SEO for AI coding agents. Pulls real Google Search Console data, implements Google-recommended fixes in a safe branch, verifies the rendered output (static HTML + live DOM) with Chrome DevTools, and ships — on loop.",
+  "author": {
+    "name": "SEO Autopilot"
+  },
+  "homepage": "https://github.com/your-username/seo-autopilot",
+  "license": "MIT",
+  "keywords": [
+    "seo",
+    "google-search-console",
+    "structured-data",
+    "json-ld",
+    "chrome-devtools",
+    "schema.org",
+    "rich-results",
+    "sitemap",
+    "hreflang",
+    "meta-tags"
+  ]
+}
