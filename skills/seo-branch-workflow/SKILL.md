@@ -83,10 +83,12 @@ Start the dev server (or use the built dist):
 npm run dev    # or: npm run preview (for built dist)
 ```
 
-Then invoke the **`seo-render-verify` skill** to verify:
-- Navigate to each changed page
-- Run the DOM extraction script
-- Confirm all tags match expected values
+Then invoke the **`seo-render-verify` skill** to verify each changed page in
+**both** layers:
+- **Raw HTML** (`curl`) — what crawlers / prerender / SSG actually serve
+- **Rendered DOM** (Chrome DevTools MCP preferred, Playwright fallback)
+- **Diff them** — if the edited value is missing from the raw HTML or the two
+  layers disagree, the change didn't really ship; fix the prerender/build source.
 
 **Only proceed to Phase 5 if ALL checks pass.**
 
@@ -112,18 +114,23 @@ GSC signals addressed:
 - Page: '<url>' — fixed <issue>"
 ```
 
-### Phase 6: Merge to Main and Deploy
+### Phase 6: Ship — Pull Request (default) or Merge
+
+**Default: open a Pull Request.** Do not merge to `main` yourself unless the user
+set `auto_merge: true` in config. A human reviewing AI-written SEO changes before
+they hit production is the safe default.
 
 ```bash
-# Switch to main
+# Push the branch and open a PR
+git push -u origin seo/gsc-audit-$(date +%Y-%m-%d)
+gh pr create --fill   # or print the GitHub compare URL for the user
+```
+
+**Only if `auto_merge: true`** (trusted unattended loop):
+```bash
 git checkout main
-
-# Merge (use --no-ff to preserve branch history)
 git merge --no-ff seo/gsc-audit-$(date +%Y-%m-%d) -m "Merge seo/gsc-audit-$(date +%Y-%m-%d)"
-
-# Push to trigger CI/CD (Cloudflare Pages, Vercel, etc.)
-git push origin main
-
+git push origin main   # triggers CI/CD (Cloudflare Pages, Vercel, etc.)
 echo "✅ Deployed. Monitor GSC in 48-72 hours."
 ```
 

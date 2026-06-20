@@ -28,7 +28,7 @@ Look for `.seo-config.json` in the **current working directory** (the project ro
 ### Priority 2: Global plugin config (fallback)
 Fall back to the global config at:
 ```
-~/.gemini/config/plugins/seo-optimizer/config.json
+~/.config/seo-autopilot/config.json
 ```
 
 ### Priority 3: Ask the user (if neither exists)
@@ -67,11 +67,12 @@ Then offer to create `.seo-config.json` in the project root for future use.
 ## Step 1: Pull GSC Data (Using search-console MCP)
 
 ### 🚨 Tool Verification
-Before calling any GSC tools, verify if the `search-console` MCP server is registered in your environment.
+Before calling any GSC tools, verify if the `search-console` MCP server is registered in your environment (try `list_sites`, or check the agent's MCP list).
 - **If missing / not configured:**
-  1. Notify the user: *"Google Search Console MCP server is not installed or configured. For best results, please install the search-console MCP server so I can pull real search data automatically."*
-  2. Ask the user if they would like guidance on installing it, or if they prefer to manually provide the top queries/impressions/CTR data for this audit.
-  3. If they choose manual, prompt them for key search keywords, positions, and CTRs, and proceed to Step 2.
+  1. Notify the user: *"The Google Search Console MCP server isn't connected, so I can't pull real search data automatically."*
+  2. Offer to walk them through setup — point them to **`docs/gsc-mcp-setup.md`** (a ~10-minute one-time OAuth setup with copy-paste commands for Claude Code, Codex, Gemini, Cursor, and Windsurf).
+  3. Or, if they prefer, ask them to paste the top queries/impressions/CTR/position rows manually and proceed to Step 2 with that.
+- **Note:** MCP tools usually load only at agent session start. If you just added the server, the user may need to restart the session before the tools appear.
 
 If the tool is available, pull the following data **in parallel** using the `search-console` MCP:
 
@@ -225,25 +226,30 @@ Quick checklist:
 
 ---
 
-## Step 5: Merge and Request Re-indexing
+## Step 5: Ship and Request Re-indexing
 
-After Chrome DevTools verification passes:
+After render verification passes (Step 4):
 
+**Default — open a Pull Request** (do NOT merge to `main` yourself unless
+`auto_merge: true` is set in config):
 ```bash
-# Merge to main
-git checkout main
-git merge seo/gsc-audit-$(date +%Y-%m-%d)
-git push origin main
+git push -u origin seo/gsc-audit-$(date +%Y-%m-%d)
+gh pr create --fill   # or print the compare URL for the user to open the PR
+```
 
-# Request indexing for high-priority pages via GSC
-# Use: inspect_url → then manually trigger "Request Indexing" in GSC UI
-# Or use GSC API: POST to indexing API (if configured)
+**Only if `auto_merge: true`** (trusted unattended loops):
+```bash
+git checkout main && git merge --no-ff seo/gsc-audit-$(date +%Y-%m-%d) && git push origin main
 ```
 
 After deployment:
-1. Go to GSC → URL Inspection → paste each changed URL → "Request Indexing"
-2. Check back in GSC after 48–72 hours for indexing status
-3. Monitor CTR changes in 7–14 days using `get_performance_summary`
+1. **Request indexing — manual step.** Go to GSC → URL Inspection → paste each
+   changed URL → "Request Indexing". (Be honest with the user: the Google
+   Indexing API only officially supports `JobPosting`/`BroadcastEvent` pages, so
+   an agent cannot reliably request indexing for ordinary pages via API.)
+2. Check back in GSC after 48–72 hours for indexing status.
+3. Monitor CTR changes in 7–14 days using `get_performance_summary` and compare
+   against the Step 1 baseline.
 
 ---
 

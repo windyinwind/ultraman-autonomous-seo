@@ -1,12 +1,13 @@
 {
-  "name": "ultraman-autonomous-seo",
-  "version": "1.0.0",
+  "name": "seo-autopilot",
+  "version": "2.0.0",
   "type": "plugin",
-  "description": "An autonomous, data-driven SEO optimization plugin for AI coding agents. Uses Google Search Console to identify opportunities, implements Google-recommended fixes in a safe branch, verifies output with Chrome DevTools, and runs fully autonomously in CI/CD cron loops.",
+  "description": "Self-driving, data-driven SEO for AI coding agents. Pulls real Google Search Console data, implements Google-recommended fixes in a safe branch, verifies the rendered output (static HTML + live DOM) with Chrome DevTools, and ships — on loop. Works with any agent that reads AGENTS.md or Agent Skills (Claude Code, Codex, Cursor, Gemini, Windsurf, Aider, Zed, and more).",
   "author": {
-    "name": "Doodle Sea Dev",
-    "email": "cs@doodle-sea.com"
+    "name": "SEO Autopilot"
   },
+  "homepage": "https://github.com/windyinwind/seo-autopilot",
+  "license": "MIT",
   "skills": [
     "skills/gsc-seo-audit",
     "skills/seo-branch-workflow",
@@ -15,6 +16,7 @@
   "rules": [
     "rules/seo-workflow-rules.md"
   ],
+  "agents_md": "AGENTS.md",
   "keywords": [
     "seo",
     "google-search-console",

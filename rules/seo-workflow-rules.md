@@ -5,8 +5,12 @@
 1. **ALWAYS create a git branch before making any SEO code changes.**  
    Never commit SEO changes directly to `main`. Use the `seo-branch-workflow` skill.
 
-2. **ALWAYS verify rendered DOM after changes using Chrome DevTools.**  
-   For React/SPA sites, HTML source ≠ rendered output. Meta tags injected via JS must be confirmed in the live DOM using the `seo-render-verify` skill.
+2. **ALWAYS verify BOTH the raw HTML response and the rendered DOM after changes.**  
+   HTML source ≠ rendered DOM ≠ what Google indexes. Check the served HTML
+   (`curl`) AND the live DOM (Chrome DevTools MCP preferred, Playwright fallback)
+   and **diff them** using the `seo-render-verify` skill. For prerendered/SSG
+   sites the served HTML is the indexed truth — a value that only appears in the
+   DOM did not really ship.
 
 3. **ALWAYS base SEO changes on real GSC data, not assumptions.**  
    Pull actual Search Console data using the `gsc-seo-audit` skill before making recommendations.
@@ -19,7 +23,14 @@
 6. **ALWAYS run `npm run build` (or equivalent) after changes and before committing.**  
    Broken builds ship broken SEO.
 
-7. **ALWAYS read configuration from the project-local `.seo-config.json` or fallback plugin `config.json`** to get the site URL, repo path, and credentials path before starting any workflow.
+7. **ALWAYS read configuration first:** project-local `.seo-config.json` (repo
+   root) → else global `~/.config/seo-autopilot/config.json` → else ask the user
+   for `site_url` and `repo_path`. Get the site URL, repo path, and GSC
+   credentials path before starting any workflow.
+
+7a. **DEFAULT to opening a Pull Request, never auto-merge to `main`** unless
+    `auto_merge: true` is explicitly set in config. A human should review
+    AI-written SEO changes before production.
 
 ## Data Interpretation Rules
 
