@@ -53,7 +53,7 @@ agent with no plugin system at all can run it.
 ## 🚀 Install
 
 ```bash
-git clone https://github.com/your-username/seo-autopilot.git
+git clone https://github.com/windyinwind/seo-autopilot.git
 cd seo-autopilot
 ./install.sh        # macOS / Linux
 # or:  node install.js   # Windows / macOS / Linux
